@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { API_URL, MAX_DESCRIPTION_LENGTH } from "../utils/consts";
+
 
 export default function Create() {
   const [title,setTitle] = useState('');
   const [description,setDescription] = useState('');
   const [activateBtn,setActivateBtn] = useState(false);
-
+  const [nbrCharacters,setNbrCharacters] = useState(0);
 
   useEffect(()=>{
     // if(title !== ''){
@@ -19,7 +21,32 @@ export default function Create() {
 
   const handleSubmit = (e)=>{
     e.preventDefault();
-    console.log("Formulaire soumis")
+    //Creer un article:
+    const newArticle = {
+      title: title,
+      description: description,
+      created_at : new Date().toLocaleDateString()
+    };
+    //Envoyer les donnees dans le serveur:
+    fetch(`${API_URL}/posts`,{
+      method: "POST",
+      headers:{
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(newArticle)
+    })
+    .then(()=>{
+      console.log("The new post is saved successfully😎")
+    })
+  }
+  
+  const handleDescription = (e)=>{
+    const newDescription = e.target.value;
+    if(newDescription.length <= MAX_DESCRIPTION_LENGTH){
+      setDescription(newDescription);
+      setNbrCharacters(newDescription.length)
+    }
+    
   }
 
   return (
@@ -38,10 +65,14 @@ export default function Create() {
           <label>Article Description</label>
           <textarea 
             value={description}
-            onChange={(e)=>setDescription(e.target.value)}
+            onChange={(e)=>handleDescription(e)}
             cols="30" 
             rows="5"
             className="border-0 outline-0 p-2 ring-1 ring-indigo-400 rounded-lg w-full block mt-1 focus:ring-2"></textarea>
+            <div className="text-right">
+              <small 
+                className={nbrCharacters >= MAX_DESCRIPTION_LENGTH ? 'text-red-500' : 'text-green-500'}>Max : {nbrCharacters}/{MAX_DESCRIPTION_LENGTH} Caracteres</small>
+            </div>
         </div>
         <button
           disabled={!activateBtn}

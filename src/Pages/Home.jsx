@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import PostItem from "../Components/PostItem"
+import { API_URL } from "../utils/consts";
 
 export default function Home() {
     const [posts,setPosts] = useState([]);
@@ -14,7 +15,7 @@ export default function Home() {
     //Aller recuperer les donnees du serveur Backend
     useEffect(function(){
         setLoading(true);
-        fetch('http://localhost:3000/posts')
+        fetch(`${API_URL}/posts`)
             .then(response=>response.json())
             .then(data => {
                 setLoading(false);
