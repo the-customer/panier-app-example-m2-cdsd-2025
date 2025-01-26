@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import PostItem from "../Components/PostItem"
 import { API_URL } from "../utils/consts";
 
+
 export default function Home() {
     const [posts,setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
