@@ -4,10 +4,19 @@ import Layout from './layouts/Layout'
 import Home from './Pages/Home'
 import Create from './Pages/Create'
 import Page404 from './Pages/Page404'
+import { Toaster } from 'sonner'
 
 function App() {
   return (
     <>
+    <Toaster 
+      // closeButton={true}
+      toastOptions={{
+        // style: {
+        //   background: '#777',
+        // },
+        className: 'text-white bg-indigo-500',
+    }}/>
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Layout/>}>

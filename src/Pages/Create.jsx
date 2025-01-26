@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { API_URL, MAX_DESCRIPTION_LENGTH } from "../utils/consts";
 import { useNavigate } from "react-router-dom";
+import { Toaster, toast } from "sonner";
+
+
 
 
 export default function Create() {
@@ -26,8 +29,8 @@ export default function Create() {
     e.preventDefault();
     //Creer un article:
     const newArticle = {
-      title: title,
-      description: description,
+      title,
+      description,
       created_at : new Date().toLocaleDateString()
     };
     //Envoyer les donnees dans le serveur:
@@ -39,7 +42,10 @@ export default function Create() {
       body: JSON.stringify(newArticle)
     })
     .then((response)=>{
-      navigate("/")
+      // navigate("/")
+      toast('The new article has been saved successfully😎')
+      setTitle('')
+      setDescription('')
     })
   }
   
@@ -54,6 +60,7 @@ export default function Create() {
 
   return (
     <>
+      
       <div className="text-2xl">Create</div>
       <form className="w-1/2" onSubmit={(e)=>handleSubmit(e)}>
         <div className="mb-4">
@@ -81,6 +88,7 @@ export default function Create() {
           disabled={!activateBtn}
           className="bg-indigo-500 text-white block w-full p-2 rounded-lg hover:bg-indigo-600 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
           >Create</button> 
+          {/* <button type="button" className="bg-blue-500 rounded-lg px-6 py-2 mt-2" onClick={() => toast('Le message a affiche')}>Give me a toast</button> */}
       </form>
     </>
   )
