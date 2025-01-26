@@ -7,9 +7,14 @@ export default function Home() {
     const [loading, setLoading] = useState(false);
     
     const deletePost = (id)=>{
+        //Supprimer l'article du State
         setPosts(prevPosts => 
             prevPosts.filter(p=> p.id !== id)
         );
+        //Supprimer l'article de la base de donnee
+        fetch(`${API_URL}/posts/${id}`,{
+            method: 'DELETE'
+        })
     }
 
     //Aller recuperer les donnees du serveur Backend
