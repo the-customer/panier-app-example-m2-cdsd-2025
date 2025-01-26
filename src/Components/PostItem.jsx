@@ -1,46 +1,62 @@
 import { useState } from "react";
 import { FaTrashAlt, FaRegEdit } from "react-icons/fa";
+import ModalEdit from "./ModalEdit";
+import { API_URL } from "../utils/consts";
 
-export default function PostItem({posts,handleDelete}) {
-    const [editing,setEditing] = useState(false);
+
+
+export default function PostItem({posts,setPosts,handleDelete}) {
     const [editedArticle,setEditedArticle] = useState(null);
     const onEdit = (post)=>{
         setEditedArticle({...post})
-        setEditing(true);
+    }
+    const onSaveEditArticle = (e) =>{
+        e.preventDefault();
+        //Enregistrer les modification dans la base de donees
+        fetch(`${API_URL}/posts/${editedArticle.id}`,{
+            method: 'PUT',
+            headers:{
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(editedArticle)
+        }).then(()=>{
+            console.log("Les donnees sont enregistrees");
+            //mettre a jour l'etat pour que le dom s'actualise
+            setPosts(currentPosts=>
+                currentPosts.map(p => p.id === editedArticle.id ? {...editedArticle} : p)
+            );
+            //Fermer la boite modale
+            setEditedArticle(null)
+        });
+        
     }
   return (
     <>
-    {editing===true && <div className="bg-gray-50 absolute w-full h-screen top-0 left-0 flex justify-center items-center">
-        <form className="w-1/2" onSubmit={(e)=>handleSubmit(e)}>
-            <div className="mb-4">
-            <label>Article title</label>
-            <input
-                value={editedArticle.title}
-                onChange={(e)=>setEditedArticle({...editedArticle,title:e.target.value})}
-                type="text"
-                className="border-0 outline-0 p-2 ring-1 ring-indigo-400 rounded-lg w-full block mt-1 focus:ring-2"/>
-            </div>
-            <div className="mb-4">
-            <label>Article Description</label>
-            <textarea 
-                value={editedArticle.description}
-                onChange={(e)=>setEditedArticle({...editedArticle,description:e.target.value})}
-                cols="30" 
-                rows="5"
-                className="border-0 outline-0 p-2 ring-1 ring-indigo-400 rounded-lg w-full block mt-1 focus:ring-2"></textarea>
-            </div>
-            <button
-            className="bg-indigo-500 text-white block w-full p-2 rounded-lg hover:bg-indigo-600 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
-            >Edit</button> 
-        </form>
-        <button 
-            type="button"
-            onClick={()=>setEditing(false)}
-            className="absolute top-5 right-5 text-red-600 underline underline-offset-2">Close</button>
-    </div>}
+
+<form class="max-w-md mx-auto">   
+    <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+    <div class="relative">
+        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+            </svg>
+        </div>
+        <input type="search" id="default-search" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search Mockups, Logos..." required />
+    </div>
+</form>
+
+    {
+        editedArticle !==null && 
+        <ModalEdit 
+            handleEdit={onSaveEditArticle}
+            setEditedArticle={setEditedArticle} 
+            editedArticle={editedArticle}/>
+    }
 
 
-
+        <p>
+            mot recherché :
+        </p>
         {posts.map(post=>(
             <div key={post.id} className="p-6 border-b">
                 <div className="mb-4 flex justify-between items-start">
