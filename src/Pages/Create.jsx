@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { API_URL, MAX_DESCRIPTION_LENGTH } from "../utils/consts";
-import CustomToast from "../Components/Common/CustomToast";
+import { useNavigate } from "react-router-dom";
 
 
 export default function Create() {
   const [title,setTitle] = useState('');
   const [description,setDescription] = useState('');
-  const [saved,setSaved]=useState(false);
   const [activateBtn,setActivateBtn] = useState(false);
   const [nbrCharacters,setNbrCharacters] = useState(0);
+
+  const navigate = useNavigate();
 
   useEffect(()=>{
     // if(title !== ''){
@@ -38,11 +39,7 @@ export default function Create() {
       body: JSON.stringify(newArticle)
     })
     .then((response)=>{
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
-      //effacer les champs
-      setTitle('')
-      setDescription('')
+      navigate("/")
     })
   }
   
@@ -57,12 +54,6 @@ export default function Create() {
 
   return (
     <>
-      
-
-      {saved && <CustomToast message="The new post is saved successfully😎"/>}
-
-
-
       <div className="text-2xl">Create</div>
       <form className="w-1/2" onSubmit={(e)=>handleSubmit(e)}>
         <div className="mb-4">
